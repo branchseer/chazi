@@ -11,12 +11,12 @@ fn test_top_level_ignore() {
 mod tests {
     use std::time::Duration;
 
-    #[chazi::test(exit_code=12)]
+    #[chazi::test(exit_code = 12)]
     fn test_exit_code() {
         std::process::exit(12);
     }
 
-    #[chazi::test(exit_code=12, parent_should_panic)]
+    #[chazi::test(exit_code = 12, parent_should_panic)]
     fn test_exit_code_no_matched() {
         std::process::exit(0);
     }

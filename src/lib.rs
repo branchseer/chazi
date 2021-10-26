@@ -8,7 +8,7 @@ use std::time::Duration;
 pub use ::chazi_macros::test;
 
 use crate::probe::{generate_probe, parse_probe};
-use crate::reached::{CHECK_REACH, parse_reach_info, ReachLineInfo};
+use crate::reached::{parse_reach_info, ReachLineInfo, CHECK_REACH};
 
 mod probe;
 pub mod reached;
@@ -75,13 +75,10 @@ pub fn fork_in_test(test_fn_module_path: &str, test_name: &str, impl_fn: fn(), c
         }
         // Quitting the process prematurely to prevent libtest from outputting "test result: ok. ....."
         std::process::exit(0);
+    } else if config.parent_should_panic {
+        std::panic::catch_unwind(|| parent(test_fn_module_path, test_name, config)).unwrap_err();
     } else {
-        if config.parent_should_panic {
-            std::panic::catch_unwind(|| parent(test_fn_module_path, test_name, config))
-                .unwrap_err();
-        } else {
-            parent(test_fn_module_path, test_name, config)
-        }
+        parent(test_fn_module_path, test_name, config)
     }
 }
 
@@ -118,11 +115,7 @@ fn parent(test_fn_module_path: &str, test_name: &str, config: TestConfig) {
         }
     });
 
-
-    let expects_panic = match config.expected_result {
-        TestResult::Panic => true,
-        _ => false,
-    };
+    let expects_panic = matches!(config.expected_result, TestResult::Panic);
     let stderr_task = std::thread::spawn({
         let stderr = child.stderr.take().unwrap();
         let check_reach = config.check_reach;
@@ -157,7 +150,7 @@ fn parent(test_fn_module_path: &str, test_name: &str, config: TestConfig) {
     let exit_status = if config.timeout != Duration::from_nanos(0) {
         wait_timeout::ChildExt::wait_timeout(&mut child, config.timeout)
             .expect("The command wasn't running")
-            .expect(format!("Timeout({:?}) exceeded", config.timeout).as_str())
+            .unwrap_or_else(|| panic!("Timeout({:?}) exceeded", config.timeout))
     } else {
         child.wait().expect("The command wasn't running")
     };
