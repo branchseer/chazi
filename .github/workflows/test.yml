@@ -1,0 +1,36 @@
+name: Test
+
+on:
+  push:
+    branches: [ master ]
+    paths-ignore:
+      - '**/README.md'
+  pull_request:
+    branches: [ master ]
+    paths-ignore:
+      - '**/README.md'
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    continue-on-error: true
+    strategy:
+      matrix:
+        os: [
+          ubuntu-18.04,
+          windows-2019
+        ]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        default: true
+        profile: minimal
+    - name: Run tests
+      shell: bash
+      run: |
+        cargo test --verbose --release
