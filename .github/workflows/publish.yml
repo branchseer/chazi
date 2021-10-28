@@ -13,13 +13,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions-rs/toolchain@v1
+    - uses: dsaltares/fetch-gh-release-asset@master
       with:
-        toolchain: stable
-        default: true
-        profile: minimal
+        repo: "crate-ci/cargo-release"
+        version: "tags/v0.18.2"
+        file: "cargo-release-v0.18.2-x86_64-unknown-linux-gnu.tar.gz"
+        target: ${{ env.RUNNER_TEMP }}/cargo-release.tar.gz
+        token: ${{ secrets.GITHUB_TOKEN }}
     - run: |
+        tar xf $RUNNER_TEMP/cargo-release.tar.gz -C $RUNNER_TEMP
         git config --global user.email "dk4rest@gmail.com"
         git config --global user.name "patr0nus"
-        cargo install --version=~0.18 cargo-release
-        cargo release -v ${INPUT_BUMPLEVEL} --execute --workspace --no-confirm --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        $RUNNER_TEMP/cargo-release -v ${INPUT_BUMPLEVEL} --execute --workspace --no-confirm --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
