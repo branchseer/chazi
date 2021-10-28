@@ -3,6 +3,8 @@ name = "chazi_macros"
 version = "0.1.0"
 authors = ["patr0nus <dk4rest@gmail.com>"]
 edition = "2018"
+description = "chazi's proc macros"
+license = "MIT OR Apache-2.0"
 
 [lib]
 proc-macro = true

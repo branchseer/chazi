@@ -3,6 +3,8 @@ name = "chazi"
 version = "0.1.0"
 authors = ["patr0nus <dk4rest@gmail.com>"]
 edition = "2018"
+description = "Run tests in separate processes"
+license = "MIT OR Apache-2.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
