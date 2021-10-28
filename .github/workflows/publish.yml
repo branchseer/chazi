@@ -13,14 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: dsaltares/fetch-gh-release-asset@master
-      with:
-        repo: "crate-ci/cargo-release"
-        version: "tags/v0.18.2"
-        file: "cargo-release-v0.18.2-x86_64-unknown-linux-gnu.tar.gz"
-        target: ${{ env.RUNNER_TEMP }}/cargo-release.tar.gz
-        token: ${{ secrets.GITHUB_TOKEN }}
     - run: |
+        wget -O $RUNNER_TEMP/cargo-release.tar.gz https://github.com/crate-ci/cargo-release/releases/download/v0.18.2/cargo-release-v0.18.2-x86_64-unknown-linux-gnu.tar.gz
         tar xf $RUNNER_TEMP/cargo-release.tar.gz -C $RUNNER_TEMP
         git config --global user.email "dk4rest@gmail.com"
         git config --global user.name "patr0nus"
