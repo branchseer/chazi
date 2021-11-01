@@ -3,10 +3,9 @@ name: Publish
 on:
   workflow_dispatch:
     inputs:
-      bumpLevel:
-        description: cargo-release bump level
+      CR_ARGS:
+        description: "cargo-release args (examples: patch --package chazi, --workspace, release --package chazi_macros)"
         required: true
-        default: 'release'
 
 jobs:
   publish:
@@ -18,4 +17,4 @@ jobs:
         tar xf $RUNNER_TEMP/cargo-release.tar.gz -C $RUNNER_TEMP
         git config --global user.email "dk4rest@gmail.com"
         git config --global user.name "patr0nus"
-        $RUNNER_TEMP/cargo-release release -v ${INPUT_BUMPLEVEL} --execute --workspace --no-confirm --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        $RUNNER_TEMP/cargo-release release -v ${INPUT_CR_ARGS} --execute --no-confirm --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
