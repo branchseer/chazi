@@ -3,7 +3,7 @@ name: Publish
 on:
   workflow_dispatch:
     inputs:
-      CR_ARGS:
+      cr_args:
         description: "cargo-release args (examples: patch --package chazi, --workspace, release --package chazi_macros)"
         required: true
 
@@ -17,5 +17,5 @@ jobs:
         tar xf $RUNNER_TEMP/cargo-release.tar.gz -C $RUNNER_TEMP
         git config --global user.email "dk4rest@gmail.com"
         git config --global user.name "patr0nus"
-        echo $RUNNER_TEMP/cargo-release release -v ${INPUT_CR_ARGS} --execute --no-confirm
-        $RUNNER_TEMP/cargo-release release -v ${INPUT_CR_ARGS} --execute --no-confirm --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        echo $RUNNER_TEMP/cargo-release release -v ${{ github.event.inputs.cr_args }} --execute --no-confirm
+        $RUNNER_TEMP/cargo-release release -v ${{ github.event.inputs.cr_args }} --execute --no-confirm --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
