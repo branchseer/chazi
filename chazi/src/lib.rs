@@ -160,7 +160,7 @@ fn parent(test_fn_module_path: &str, test_name: &str, config: TestConfig) {
     };
     match exit_status.code() {
         None => panic!("Test process was terminated by a signal"), // According to the doc of ExiStatus.code
-        Some(exit_code) => assert_eq!(dbg!(exit_code), dbg!(expected_exit_code)),
+        Some(exit_code) => assert_eq!(exit_code, expected_exit_code),
     }
     stdout_task.join().unwrap();
     let (reach_lines, panicked) = stderr_task.join().unwrap();
