@@ -3,7 +3,8 @@ use quote::quote;
 use std::fmt::Display;
 use std::str::FromStr;
 use syn::spanned::Spanned;
-use syn::{AttributeArgs, ItemFn, Lit, MetaNameValue};
+use syn::{AttributeArgs, Lit, MetaNameValue};
+
 
 fn parse_lit_num<N>(name_value: &MetaNameValue) -> syn::Result<N>
     where
@@ -26,7 +27,7 @@ fn parse_lit_num<N>(name_value: &MetaNameValue) -> syn::Result<N>
     }
 }
 
-fn test_impl(mut input: ItemFn, args: AttributeArgs) -> Result<TokenStream, syn::Error> {
+fn test_impl(mut input: syn_mid::ItemFn, args: AttributeArgs) -> Result<TokenStream, syn::Error> {
     if input.sig.asyncness.is_some() {
         return Err(syn::Error::new_spanned(input.sig.fn_token, ""));
     }
@@ -144,7 +145,7 @@ fn test_impl(mut input: ItemFn, args: AttributeArgs) -> Result<TokenStream, syn:
 
 #[proc_macro_attribute]
 pub fn test(args: TokenStream, item: TokenStream) -> TokenStream {
-    let input = syn::parse_macro_input!(item as syn::ItemFn);
+    let input = syn::parse_macro_input!(item as syn_mid::ItemFn);
     let args = syn::parse_macro_input!(args as syn::AttributeArgs);
     test_impl(input, args).unwrap_or_else(|e| e.to_compile_error().into())
 }
